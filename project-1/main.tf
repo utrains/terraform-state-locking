@@ -19,7 +19,22 @@ provider "aws" {
     region  = var.ec2_region
 }
 
+#data for amazon linux
+
+data "aws_ami" "amazon-2" {
+    most_recent = true
+    filter {
+        name = "name"
+        values = ["amzn2-ami-hvm-*-x86_64-ebs"]
+    }
+    owners = ["amazon"]
+}
+
 resource "aws_instance" "app_server" {
-    ami           = "ami-08d70e59c07c61a3a"
+    ami           = "${data.aws_ami.amazon-2.id}"
     instance_type = var.ec2_instance_type
+
+    tags = {
+        Name = "EC2 instance with remote state developer-1"
+    }
 }
